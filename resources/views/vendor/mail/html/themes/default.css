@@ -1,0 +1,23 @@
+/* Base */
+body,
+body *:not(html):not(style):not(br):not(tr):not(code) {
+    box-sizing: border-box;
+    position: relative;
+}
+
+body {
+    -webkit-text-size-adjust: none;
+    color: #000000;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    width: 100% !important;
+}
+
+img {
+    max-width: 100%;
+}
+
+.break-all {
+    word-break: break-all;
+}
