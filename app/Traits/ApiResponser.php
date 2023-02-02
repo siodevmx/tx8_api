@@ -26,7 +26,7 @@ trait ApiResponser
             'status' => 'success',
             'code_name' => $code_name,
             'message' => $message,
-            'statusCode'=> $code
+            'statusCode' => $code
         ], $code);
     }
 
@@ -35,12 +35,12 @@ trait ApiResponser
      * @param null $message
      * @return array
      */
-    protected function returnSuccessCollection($message = null,$code)
+    protected function returnSuccessCollection($message = null, $code)
     {
         return [
-            'status' =>'success',
+            'status' => 'success',
             'message' => $message,
-            'statusCode'=> $code,
+            'statusCode' => $code,
 
         ];
     }
@@ -57,7 +57,7 @@ trait ApiResponser
             'status' => 'error',
             'message' => $message,
             'data' => null,
-            'statusCode'=> $code
+            'statusCode' => $code
         ], $code);
     }
 
@@ -72,7 +72,7 @@ trait ApiResponser
             'status' => 'error',
             'errors' => $message,
             'data' => null,
-            'statusCode'=> $code
+            'statusCode' => $code
         ], $code);
     }
 
@@ -87,14 +87,14 @@ trait ApiResponser
     protected function respondWithToken($token, $message = null, $code = 200)
     {
         return response()->json([
-            'status' =>'success',
+            'status' => 'success',
             'message' => $message,
             'data' => [
                 'access_token' => $token,
                 'token_type' => 'bearer',
-                'expires_in' => auth()->factory()->getTTL()
+                'expires_in' => auth()->factory()->getTTL() * 60
             ],
-            'statusCode'=> $code
+            'statusCode' => $code
         ], $code);
     }
 }

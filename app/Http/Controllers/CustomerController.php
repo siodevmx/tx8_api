@@ -148,7 +148,7 @@ class CustomerController extends Controller
      * @param int $id
      * @return UserResource | JsonResponse
      */
-    public function show(int $id)
+    public function show(String $id)
     {
         try {
             $user = User::with('userDetails')->whereHas('roles', function ($q) use ($id) {
@@ -172,7 +172,6 @@ class CustomerController extends Controller
     {
         //
     }
-
 
     public function sendVerifyEmail(Request $request)
     {
@@ -259,7 +258,6 @@ class CustomerController extends Controller
         }
     }
 
-
     /**
      * @param int $id
      * Update the status of identificacion
@@ -281,6 +279,7 @@ class CustomerController extends Controller
                     return $this->errorResponse(__('Customer not found'), 404);
                 } else {
                     $userResource = UserResource::make($user);
+                    $userDetails = $userResource->userDetails;
                     $identification = $userResource->userDetails->identification;
 
                     // si ya se verificó.
@@ -291,7 +290,6 @@ class CustomerController extends Controller
                         $deleted = $this->deleteOne($identification);
                         if ($deleted) {
                             $authorize = $request->input('authorize');
-                            $userDetails = UserDetails::find($id);
                             $userDetails->identification_verified = $authorize;
                             $userDetails->identification = null;
                             $userDetails->save();
@@ -300,7 +298,6 @@ class CustomerController extends Controller
                                 ->whereHas('roles', function ($q) use ($id) {
                                     $q->where('name', 'customer');
                                 })->where('id', $id)->first();
-
 
                             return $this->successResponse(UserResource::make($userUpdated), __('verified ID'), 'success_verification_id', 201);
                         } else {

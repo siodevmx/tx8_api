@@ -39,7 +39,7 @@ class ImageController extends Controller
                 ->paginate($limit)
                 ->appends(request()->query());
 
-            return ImageResource::collection($images)->additional($this->returnSuccessCollection(__('Images list'),200));
+            return ImageResource::collection($images)->additional($this->returnSuccessCollection(__('Images list'), 200));
         } catch (\Exception $e) {
             return $this->errorResponse($e->getMessage(), 500);
         }
@@ -114,9 +114,7 @@ class ImageController extends Controller
                 return $this->errorResponse($e->getMessage(), 500);
             }
         }
-
     }
-
 
     /**
      * Delete a resource from storage.
@@ -131,9 +129,8 @@ class ImageController extends Controller
             if (is_null($image)) {
                 return $this->errorResponse(__('Image not found'), 404);
             } else {
-                $image_path = $image->image_path;
+                $image_path = $image->path;
                 $deleted = $this->deleteOne($image_path);
-
                 if ($deleted) {
                     $image->delete();
                     return $this->successResponse(null, __('Image deleted'), 'success_image_deleted', 201);

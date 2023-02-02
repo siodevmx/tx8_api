@@ -5,8 +5,12 @@ namespace App\Http\Controllers;
 use App\Http\Resources\Category\CategoryResource;
 use App\Models\Category;
 use App\Traits\ApiResponser;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Validator;
+use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class CategoryController extends Controller
 {
@@ -16,12 +20,25 @@ class CategoryController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     * @return JsonResponse | AnonymousResourceCollection
      */
-    public function index()
+    public function index(Request $request)
     {
-        $category = Category::get();
-        return CategoryResource::collection($category)->additional($this->returnSuccessCollection(__('Categories list'),200));
+        try {
+            $limit = $request->input('limit', 10);
+            $products = QueryBuilder::for(Category::class)
+                ->allowedFilters([
+                    AllowedFilter::partial('name'),
+                ])
+                ->defaultSort('-created_at')
+                ->allowedSorts('name', 'created_at')
+                ->paginate($limit)
+                ->appends(request()->query());
+
+            return CategoryResource::collection($products)->additional($this->returnSuccessCollection(__('Categories list'),200));
+        } catch (\Exception $e) {
+            return $this->errorResponse($e->getMessage(), 500);
+        }
     }
 
     /**
@@ -91,7 +108,7 @@ class CategoryController extends Controller
     {
         return Validator::make(request()->all(), [
                 'name' => 'required|string|max:50|unique:categories,name',
-                'description' => 'string|max:60'
+                'description' => 'string|max:60|nullable'
             ]
         );
     }
